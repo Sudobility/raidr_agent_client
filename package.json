@@ -1,6 +1,6 @@
 {
   "name": "@sudobility/raidr_agent_client",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Client library for the RaidrAgent API with TanStack Query hooks",
   "type": "module",
   "main": "dist/index.js",
