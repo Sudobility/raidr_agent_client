@@ -1,6 +1,6 @@
 {
   "name": "@sudobility/raidr_agent_client",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Client library for the RaidrAgent API with TanStack Query hooks",
   "type": "module",
   "main": "dist/index.js",
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@eslint/js": "~10.0.1",
-    "@sudobility/raidr_agent_types": "^0.0.13",
+    "@sudobility/raidr_agent_types": "^0.0.14",
     "@sudobility/raidr_types": "^0.1.18",
     "@sudobility/types": "^1.9.78",
     "@tanstack/react-query": "~5.104.5",
