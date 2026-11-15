@@ -1,5 +1,6 @@
 export { useHealth, type UseHealthReturn } from './useHealth';
 export {
+  useAgentSettings,
   useCandidates,
   useClassifyIntent,
   useImportRun,
@@ -7,6 +8,7 @@ export {
   usePrepare,
   useRun,
   useRuns,
+  useSaveAgentSettings,
   useSiteAuth,
   useSiteContext,
   useSiteManifest,

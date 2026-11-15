@@ -1,5 +1,6 @@
 import type { NetworkClient } from '@sudobility/types';
 import type {
+  AgentSettingsResponse,
   BaseResponse,
   CandidateSite,
   HealthCheckData,
@@ -9,6 +10,7 @@ import type {
   LlmPayloadResponse,
   PrepareRequest,
   PrepareResponse,
+  PutAgentSettingsRequest,
   RunDetail,
   RunImportRequest,
   RunImportResponse,
@@ -256,6 +258,48 @@ export class RaidrAgentClient {
       timeout: options?.timeout,
     });
     return validateResponse<RunDetail>(response.data, 'getRun');
+  }
+
+  // --- Saved agents (synced settings) ---
+
+  /**
+   * The user's synced saved-agents document (`GET /api/v1/agent-settings`).
+   * The server returns an empty document the first time. The server treats the
+   * document as opaque; all scheduling and execution happen on the client.
+   */
+  async getAgentSettings(
+    token: FirebaseIdToken,
+    options?: { timeout?: number }
+  ): Promise<BaseResponse<AgentSettingsResponse>> {
+    const url = buildUrl(this.baseUrl, '/api/v1/agent-settings');
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+      timeout: options?.timeout,
+    });
+    return validateResponse<AgentSettingsResponse>(
+      response.data,
+      'getAgentSettings'
+    );
+  }
+
+  /**
+   * Replace the user's saved-agents document (`PUT /api/v1/agent-settings`).
+   * The whole document is sent; the server stores it verbatim per user.
+   */
+  async putAgentSettings(
+    document: PutAgentSettingsRequest,
+    token: FirebaseIdToken,
+    options?: { timeout?: number }
+  ): Promise<BaseResponse<AgentSettingsResponse>> {
+    const url = buildUrl(this.baseUrl, '/api/v1/agent-settings');
+    const response = await this.networkClient.put(url, document, {
+      headers: createAuthHeaders(token),
+      timeout: options?.timeout ?? 30_000,
+    });
+    return validateResponse<AgentSettingsResponse>(
+      response.data,
+      'putAgentSettings'
+    );
   }
 
   // --- Local mode ---

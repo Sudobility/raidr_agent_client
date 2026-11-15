@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
+  AgentSettingsResponse,
   BaseResponse,
   CandidateSite,
   IntentRequest,
@@ -9,6 +10,7 @@ import type {
   LlmPayloadResponse,
   PrepareRequest,
   PrepareResponse,
+  PutAgentSettingsRequest,
   RunDetail,
   RunImportRequest,
   RunImportResponse,
@@ -260,5 +262,51 @@ export function useImportRun(
       ),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.runs() }),
+  });
+}
+
+// --- Saved agents (synced settings) ---
+
+/**
+ * The user's synced saved-agents document (`GET /api/v1/agent-settings`). The
+ * client's local store is the source of truth for execution; this hook is the
+ * sync pull.
+ */
+export function useAgentSettings(
+  networkClient: NetworkClient,
+  baseUrl: string,
+  getToken: TokenGetter,
+  options?: { enabled?: boolean }
+) {
+  const client = useClient(networkClient, baseUrl);
+  return useQuery<AgentSettingsResponse, Error>({
+    queryKey: QUERY_KEYS.agentSettings(),
+    queryFn: async () =>
+      unwrap(
+        await client.getAgentSettings(await required(getToken)),
+        'load your saved agents'
+      ),
+    enabled: options?.enabled ?? true,
+    staleTime: 30_000,
+    gcTime: DEFAULT_GC_TIME,
+  });
+}
+
+/** `PUT /agent-settings` as a mutation; refreshes the cached document on success. */
+export function useSaveAgentSettings(
+  networkClient: NetworkClient,
+  baseUrl: string,
+  getToken: TokenGetter
+) {
+  const client = useClient(networkClient, baseUrl);
+  const queryClient = useQueryClient();
+  return useMutation<AgentSettingsResponse, Error, PutAgentSettingsRequest>({
+    mutationFn: async document =>
+      unwrap(
+        await client.putAgentSettings(document, await required(getToken)),
+        'save your agents'
+      ),
+    onSuccess: result =>
+      queryClient.setQueryData(QUERY_KEYS.agentSettings(), result),
   });
 }

@@ -62,4 +62,6 @@ export const QUERY_KEYS = {
   /** Cache key for one site's context (manifest, tool auth, routes). */
   siteContext: (apiHost: string) =>
     ['raidr_agent', 'site-context', apiHost] as const,
+  /** Cache key for the user's synced saved-agents document. */
+  agentSettings: () => ['raidr_agent', 'agent-settings'] as const,
 } as const;
