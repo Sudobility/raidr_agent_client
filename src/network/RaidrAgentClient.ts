@@ -1,6 +1,8 @@
 import type { HealthCheckData, NetworkClient } from '@sudobility/types';
 import type {
   AgentSettingsResponse,
+  AgentStepRequest,
+  AgentStepResponse,
   BaseResponse,
   CandidateSite,
   IntentRequest,
@@ -320,6 +322,28 @@ export class RaidrAgentClient {
       timeout: options?.timeout ?? 30_000,
     });
     return validateResponse<LlmPayloadResponse>(response.data, 'getLlmPayload');
+  }
+
+  /**
+   * One agentic-loop decision made with the server's key through the managed
+   * `agent` ShapeShyft endpoint (`POST /agent/step`). The cloud route for
+   * autonomous / long-lasting agents: no user key needed. The loop and all
+   * site calls still run on the device; only this decision is delegated.
+   */
+  async invokeAgentStep(
+    body: AgentStepRequest,
+    token: FirebaseIdToken,
+    options?: { timeout?: number }
+  ): Promise<BaseResponse<AgentStepResponse>> {
+    const url = buildUrl(this.baseUrl, '/api/v1/agent/step');
+    const response = await this.networkClient.post(url, body, {
+      headers: createAuthHeaders(token),
+      timeout: options?.timeout ?? 90_000,
+    });
+    return validateResponse<AgentStepResponse>(
+      response.data,
+      'invokeAgentStep'
+    );
   }
 
   /** The sites for an intent's labels (`POST /candidates`), unranked (local mode ranks them with `rank-sites`). */
