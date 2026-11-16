@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { HealthCheckData, Optional } from '@sudobility/raidr_agent_types';
-import type { NetworkClient } from '@sudobility/types';
+import type { Optional } from '@sudobility/raidr_agent_types';
+import type { HealthCheckData, NetworkClient } from '@sudobility/types';
 import { RaidrAgentClient } from '../network/RaidrAgentClient';
 import { DEFAULT_GC_TIME, DEFAULT_STALE_TIME, QUERY_KEYS } from '../types';
 

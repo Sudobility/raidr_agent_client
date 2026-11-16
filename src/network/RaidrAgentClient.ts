@@ -1,9 +1,8 @@
-import type { NetworkClient } from '@sudobility/types';
+import type { HealthCheckData, NetworkClient } from '@sudobility/types';
 import type {
   AgentSettingsResponse,
   BaseResponse,
   CandidateSite,
-  HealthCheckData,
   IntentRequest,
   IntentResponse,
   LlmPayloadRequest,
